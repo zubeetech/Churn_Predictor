@@ -14,14 +14,6 @@ st.title("Vodafone Churn Database")
 
 @st.cache_resource(show_spinner='connecting to database...')
 
-# def init_connect():
-#     connection = pyodbc.connect(
-#         "DRIVER={SQL Server};"
-#         "SERVER=" + st.secrets['server'] + ";"
-#         "DATABASE=" + st.secrets['database'] + ";"
-#         "UID=" + st.secrets['username'] + ";"
-#         "PWD=" + st.secrets['password']
-#     )
 
 # Define the function to initialize the connection
 def init_connect():
@@ -63,6 +55,9 @@ if rows:
     st.write(rows)
 else:
     st.write("No data available or query failed.")
+
+
+st.table(rows)
 
 # conn = init_connect()
 
