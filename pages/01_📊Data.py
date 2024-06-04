@@ -57,7 +57,7 @@ else:
     st.write("No data available or query failed.")
 
 
-st.table(rows)
+st.dataframe(rows)
 
 # conn = init_connect()
 
