@@ -1,4 +1,6 @@
 import streamlit as st
+import pandas as pd
+import numpy as np
 import pyodbc
 
 st.set_page_config(
@@ -31,13 +33,15 @@ def init_connect():
 # Cache the data fetching function
 @st.cache_data(show_spinner='running query...')
 
+
 def running_query(query):
     conn = init_connect()  # Initialize connection inside the function
     try:
         with conn.cursor() as cursor:
             cursor.execute(query)
             rows = cursor.fetchall()
-        return rows
+            columns = [column[0] for column in cursor.description]  # Get column names
+        return pd.DataFrame.from_records(rows, columns=columns)  # Convert to DataFrame
     except pyodbc.Error as e:
         st.error(f"Database error: {e}")
         return None
@@ -48,16 +52,26 @@ def running_query(query):
 squery = "SELECT * FROM LP2_Telco_churn_first_3000"
 
 # Execute the query
-rows = running_query(squery)
+df = running_query(squery)
 
 # Display the results
-if rows:
-    st.write(rows)
+if df is not None and not df.empty:
+    # Get categorical and numerical columns
+    cat_cols = df.select_dtypes(include=['object']).columns.tolist()
+    num_cols = df.select_dtypes(include=['number']).columns.tolist()
+
+    # Select data type
+    select = st.selectbox('Select data type', ['All columns', 'Categorical', 'Numerical'])
+
+    # Display DataFrame based on selection
+    if select == 'All columns':
+        st.write(df)
+    elif select == 'Categorical':
+        st.write(df[cat_cols])
+    elif select == 'Numerical':
+        st.write(df[num_cols])
 else:
     st.write("No data available or query failed.")
-
-
-st.dataframe(rows)
 
 # conn = init_connect()
 
