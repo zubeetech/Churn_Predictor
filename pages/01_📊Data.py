@@ -61,14 +61,13 @@ if df is not None and not df.empty:
     num_cols = df.select_dtypes(include=['number']).columns.tolist()
 
     # Select data type
-    select = st.selectbox('Select data type', ['All columns', 'Categorical', 'Numerical'])
-
+    data_select = st.selectbox('Select data type', ['All columns', 'Categorical', 'Numerical'])
     # Display DataFrame based on selection
-    if select == 'All columns':
+    if data_select == 'All columns':
         st.write(df)
-    elif select == 'Categorical':
+    elif data_select == 'Categorical':
         st.write(df[cat_cols])
-    elif select == 'Numerical':
+    elif data_select == 'Numerical':
         st.write(df[num_cols])
 else:
     st.write("No data available or query failed.")
